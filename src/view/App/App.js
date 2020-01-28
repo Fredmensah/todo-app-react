@@ -35,9 +35,9 @@ class App extends Component{
     * Reset the localStorage data...
     * */
     addTodoList = () => {
-        let old_list = this.state.todoList;
+        const old_list = this.state.todoList;
 
-        let item = {
+        const item = {
             id: (this.state.todoList.length + 1),
             name: this.state.inputText,
             checked: false
@@ -72,16 +72,23 @@ class App extends Component{
     /*
     * Change the switch handler for a todo item...
     * This updates the list and set value to true
+    * Remember never to mutate a state...
     * */
     changeSwitchHandler = itemId => {
-        let old_list = this.state.todoList;
+        const old_list = this.state.todoList;
 
         //Find index of specific object using findIndex method.
-        let objIndex = old_list.findIndex((obj => obj.id === itemId));
+        const itemIndex = old_list.findIndex((item => item.id === itemId));
 
-        //Update object's name property.
-        old_list[objIndex].checked = !old_list[objIndex].checked;
+        //Assign current object to new variable
+        const todoItem = {
+            ...old_list[itemIndex]
+        };
 
+        todoItem.checked = !todoItem.checked;
+        old_list[itemIndex] = todoItem;
+
+        //Update localStorage...
         localStorage.setItem('todoList' , JSON.stringify(old_list));
 
         this.setState({
@@ -95,13 +102,20 @@ class App extends Component{
     * Pass item id and event
     * */
     editItemHandler = (itemId , event) => {
-        let old_list = this.state.todoList;
+        const old_list = this.state.todoList;
 
         //Find index of specific object using findIndex method.
-        let objIndex = old_list.findIndex((obj => obj.id === itemId));
+        const itemIndex = old_list.findIndex((item => item.id === itemId));
+
+        const todoItem = {
+            ...old_list[itemIndex]
+        };
 
         //Update object's name property.
-        old_list[objIndex].name = event.target.value;
+        todoItem.name = event.target.value;
+
+        //Push object back into array...
+        old_list[itemIndex] = todoItem;
 
         localStorage.setItem('todoList' , JSON.stringify(old_list));
 
